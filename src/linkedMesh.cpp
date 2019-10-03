@@ -35,21 +35,19 @@ int LinkedMesh::getDown(int i){return (i+1) % (nRow+1);}
 
 LinkedMesh::LinkedMesh(){}
 
-LinkedMesh::LinkedMesh(bool** ProbMat){
+LinkedMesh::LinkedMesh(bool ProbMat[100][50]){
 
-	Matrix = new Node*[730];
-
-	for (int i=0;i<330;i++){//linhas na matriz
-		Matrix[i]=new Node[330];
-	}
-
+	header = new Node();
 
 	initialize(ProbMat);
 }
 
-void LinkedMesh::initialize(bool** ProbMat){
+void LinkedMesh::initialize(bool ProbMat[100][50]){
 	// One extra row for list header nodes 
     // for each column
+
+	std::cout<<"Inicializando nodes"<<std::endl;
+
     nRow = 7;
 	nCol = 7;
 
@@ -106,7 +104,12 @@ void LinkedMesh::initialize(bool** ProbMat){
                 Matrix[i][j].down = &Matrix[a][j]; 
             }
         }
+
     }
+
+    std::cout<<"Nodes inicializados"<<std::endl;
+
+    std::cout<<"Marcando header"<<std::endl;
 
     // link header right pointer to column  
     // header of first column  
@@ -117,7 +120,9 @@ void LinkedMesh::initialize(bool** ProbMat){
     header->left = &Matrix[0][nCol-1]; 
   
     Matrix[0][0].left = header; 
-    Matrix[0][nCol-1].right = header; 
+    Matrix[0][nCol-1].right = header;
+
+    std::cout<<"Header Marcado"<<std::endl;
 }
 
 //Tira um node da lista

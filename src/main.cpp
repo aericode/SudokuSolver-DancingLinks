@@ -13,14 +13,8 @@ int main(){
 
 	
 
-	bool** binSim;
+	bool binSim[100][50];
 
-	binSim = new bool*[50];
-
-	//NROW DEVE SER UM PONTO MAIOR DO QUE N (i<N)
-	for (int i=0;i<50;i++){//linhas na matriz
-		binSim[i]=new bool[50];
-	}
 
 
 	std::cout<<"Marcando headers\n"<<std::endl;
@@ -34,14 +28,27 @@ int main(){
             	binSim[i][j] = false;
             }
         } 
-    } 
+    }
+
+    binSim[1][0] = true; binSim[1][3] = true; 
+    binSim[1][6] = true; binSim[2][0] = true; 
+    binSim[2][3] = true; binSim[3][3] = true; 
+    binSim[3][4] = true; binSim[3][6] = true; 
+    binSim[4][2] = true; binSim[4][4] = true; 
+    binSim[4][5] = true; binSim[5][1] = true; 
+    binSim[5][2] = true; binSim[5][5] = true; 
+    binSim[5][6] = true; binSim[6][1] = true; 
+    binSim[6][6] = true; binSim[7][0] = true; 
+    binSim[7][3] = true; 
 
 
 
 	LinkedMesh test(binSim);
 
-	//LinkedMesh test(binSim);
 
 	//test.search(0);
+
+	char a;
+	std::cin>>a;
 	//std::cout<<binSim[0][0];
 }

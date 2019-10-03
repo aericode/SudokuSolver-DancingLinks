@@ -6,7 +6,7 @@
 // implementado com base em https://bit.ly/2oHRcon
 
 //81x4 para sudokus padrão
-#define SUDOKUWIDTH 324
+#define SUDOKUWIDTH 100
 
 //retornam a prox. linha/coluna lidando com a caracteristica circular
 //lida também com a coluna extra dos headers
@@ -35,14 +35,14 @@ int LinkedMesh::getDown(int i){return (i+1) % (nRow+1);}
 
 LinkedMesh::LinkedMesh(){}
 
-LinkedMesh::LinkedMesh(bool ProbMat[100][50]){
+LinkedMesh::LinkedMesh(bool ProbMat[100][100]){
 
 	header = new Node();
 
 	initialize(ProbMat);
 }
 
-void LinkedMesh::initialize(bool ProbMat[100][50]){
+void LinkedMesh::initialize(bool ProbMat[100][100]){
 	// One extra row for list header nodes 
     // for each column
 

@@ -13,7 +13,7 @@ int main(){
 
 	
 
-	bool binSim[100][50];
+	bool binSim[100][100];
 
 
 

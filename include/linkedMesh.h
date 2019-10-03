@@ -10,7 +10,7 @@ class LinkedMesh{
 public:
 	Node *header;
 	//é uma node matrix
-	Node Matrix[100][50];
+	Node Matrix[100][100];
 	std::vector<Node*> solutions; 
 
 	int nRow;
@@ -22,9 +22,9 @@ public:
 	int getDown(int);
 
 	LinkedMesh();
-	LinkedMesh(bool probMatrix[100][50]);
+	LinkedMesh(bool probMatrix[100][100]);
 
-	void initialize(bool probMatrix[100][50]);
+	void initialize(bool probMatrix[100][100]);
 	void cover(Node *targetNode);
 	void uncover(Node *targetNode);
 	Node *getMinColumn();

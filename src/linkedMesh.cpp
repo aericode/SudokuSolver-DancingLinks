@@ -209,12 +209,14 @@ void LinkedMesh::printSolutions()
   
 // Search for exact covers 
 void LinkedMesh::search(int k) 
-{ 
+{
+	std::cout<<"test11111"<<std::endl;
     Node *rowNode; 
     Node *rightNode; 
     Node *leftNode; 
     Node *column; 
   
+    std::cout<<"entrando no search"<<std::endl;
     // Header list vazia = Resolvido
     if(header->right == header) 
     { 
@@ -224,6 +226,7 @@ void LinkedMesh::search(int k)
   
     // Escolhe a coluna
     column = getMinColumn(); 
+    std::cout<<"escolhendo coluna :"<< column->colID<<std::endl;
   
     // cobre a coluna
     cover(column); 

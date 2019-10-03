@@ -41,14 +41,14 @@ int main(){
     binSim[6][6] = true; binSim[7][0] = true; 
     binSim[7][3] = true; 
 
-
+    std::cout<<"inicializando linked mesh\n";
 
 	LinkedMesh test(binSim);
 
+	std::cout<<"linked mesh inicializada\n";
 
-	//test.search(0);
+	std::cout<<"pressione enter para iniciar a busca\n";
 
-	char a;
-	std::cin>>a;
-	//std::cout<<binSim[0][0];
+	test.search(0);
+	
 }

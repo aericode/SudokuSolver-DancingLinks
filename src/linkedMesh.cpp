@@ -1,6 +1,9 @@
 #include "node.h"
 #include "linkedMesh.h"
+#include <iostream>
 #include <vector>
+
+// implementado com base em https://bit.ly/2oHRcon
 
 //81x4 para sudokus padrão
 #define SUDOKUWIDTH 324
@@ -32,22 +35,39 @@ int LinkedMesh::getDown(int i){return (i+1) % (nRow+1);}
 
 LinkedMesh::LinkedMesh(){}
 
-LinkedMesh::LinkedMesh(std::vector<bool*> ProbMat){
+LinkedMesh::LinkedMesh(bool** ProbMat){
+
+	Matrix = new Node*[730];
+
+	for (int i=0;i<330;i++){//linhas na matriz
+		Matrix[i]=new Node[330];
+	}
+
+
+	initialize(ProbMat);
+}
+
+void LinkedMesh::initialize(bool** ProbMat){
 	// One extra row for list header nodes 
     // for each column
-    nRow = ProbMat.size();
-	nCol = SUDOKUWIDTH;
+    nRow = 7;
+	nCol = 7;
+
+	std::cout<<"num de colunas :"<<nRow<<std::endl;
+	std::cout<<"num de linhas  :"<<nCol<<std::endl;
 
 
     for(int i = 0; i <= nRow; i++) 
     { 
+    	std::cout<<"i :" << i <<std::endl<<std::endl;
         for(int j = 0; j < nCol; j++) 
         { 
+        	std::cout<<"j :" << j <<std::endl;
             //"há um 1 nessa etapa da matriz" 
             if(ProbMat[i][j]) 
             { 
                 int a, b; 
-  
+  			
                 // Atualizar a contagem de elementos na coluna do header de coluna
                 if(i!=0){
                 	Matrix[0][j].nodeCount += 1; 
@@ -62,26 +82,29 @@ LinkedMesh::LinkedMesh(std::vector<bool*> ProbMat){
   
                 // Liga com os '1's vizinhos (considerando a "circularidade" da lista)
   
+
                 // Left pointer 
                 a = i; b = j; 
                 do{ b = getLeft(b); } while(!ProbMat[a][b] && b != j); 
                 Matrix[i][j].left = &Matrix[i][b]; 
-  
+
                 // Right pointer 
                 a = i; b = j; 
                 do { b = getRight(b); } while(!ProbMat[a][b] && b != j); 
                 Matrix[i][j].right = &Matrix[i][b]; 
   
+
                 // Up pointer 
                 a = i; b = j; 
                 do { a = getUp(a); } while(!ProbMat[a][b] && a != i); 
                 Matrix[i][j].up = &Matrix[a][j]; 
   
+
                 // Down pointer 
                 a = i; b = j; 
                 do { a = getDown(a); } while(!ProbMat[a][b] && a != i); 
                 Matrix[i][j].down = &Matrix[a][j]; 
-            } 
+            }
         }
     }
 
@@ -124,16 +147,14 @@ void LinkedMesh::cover(Node *targetNode)
     } 
 }
 
+//repõe um node na lista
 void LinkedMesh::uncover(Node *targetNode) 
 { 
     Node *rowNode, *leftNode; 
   
-    // get the pointer to the header of column 
-    // to which this node belong  
     Node *colNode = targetNode->column; 
   
-    // Move down the column and link back 
-    // each row by traversing left 
+    // Liga de volta movendo para baixo e para a direita
     for(rowNode = colNode->up; rowNode != colNode; rowNode = rowNode->up) 
     { 
         for(leftNode = rowNode->left; leftNode != rowNode; 
@@ -142,13 +163,87 @@ void LinkedMesh::uncover(Node *targetNode)
             leftNode->up->down = leftNode; 
             leftNode->down->up = leftNode; 
   
-            // after linking row node, increment the 
-            // node count in column header 
+            // Atualiza contagem de nodes 
             Matrix[0][leftNode->colID].nodeCount += 1; 
         } 
     } 
   
-    // link the column header from it's neighbors 
+    // Liga de volta com os vizinhos
     colNode->left->right = colNode; 
     colNode->right->left = colNode; 
-} 
+}
+
+//Retorna a coluna com menos nodes
+//Acelera o processo de decisão
+Node* LinkedMesh::getMinColumn() 
+{ 
+    Node *h = header; 
+    Node *min_col = h->right; 
+    h = h->right->right; 
+    do
+    { 
+        if(h->nodeCount < min_col->nodeCount) 
+        { 
+            min_col = h; 
+        } 
+        h = h->right; 
+    }while(h != header); 
+  
+    return min_col; 
+}
+
+void LinkedMesh::printSolutions() 
+{ 
+    std::cout<<"Printing Solutions: "; 
+    std::vector<struct Node*>::iterator i; 
+  
+    for(i = solutions.begin(); i!=solutions.end(); i++) 
+        std::cout<<(*i)->rowID<<" "; 
+    std::cout<<"\n"; 
+}
+  
+// Search for exact covers 
+void LinkedMesh::search(int k) 
+{ 
+    Node *rowNode; 
+    Node *rightNode; 
+    Node *leftNode; 
+    Node *column; 
+  
+    // Header list vazia = Resolvido
+    if(header->right == header) 
+    { 
+        printSolutions(); 
+        return; 
+    } 
+  
+    // Escolhe a coluna
+    column = getMinColumn(); 
+  
+    // cobre a coluna
+    cover(column); 
+  
+    for(rowNode = column->down; rowNode != column;  
+        rowNode = rowNode->down ) 
+    { 
+        solutions.push_back(rowNode); 
+  
+        for(rightNode = rowNode->right; rightNode != rowNode; 
+            rightNode = rightNode->right) 
+            cover(rightNode); 
+  
+        // move to level k+1 (recursively) 
+        search(k+1); 
+  
+        // if solution in not possible, backtrack (uncover) 
+        // and remove the selected row (set) from solution 
+        solutions.pop_back(); 
+  
+        column = rowNode->column; 
+        for(leftNode = rowNode->left; leftNode != rowNode; 
+            leftNode = leftNode->left) 
+            uncover(leftNode); 
+    } 
+  
+    uncover(column); 
+}

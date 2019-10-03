@@ -7,8 +7,10 @@
 // implementado com base em https://bit.ly/2oHRcon
 
 class LinkedMesh{
+public:
 	Node *header;
-	std::vector<Node*> Matrix;
+	//é uma node matrix
+	Node **Matrix;
 	std::vector<Node*> solutions; 
 
 	int nRow;
@@ -20,11 +22,15 @@ class LinkedMesh{
 	int getDown(int);
 
 	LinkedMesh();
-	LinkedMesh(std::vector<bool*>);
+	LinkedMesh(bool**);
 
+	void initialize(bool**);
 	void cover(Node *targetNode);
 	void uncover(Node *targetNode);
 	Node *getMinColumn();
+
+	void printSolutions();
+	void search(int);
 };
 
 #endif

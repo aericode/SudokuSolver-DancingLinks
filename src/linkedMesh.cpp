@@ -186,17 +186,17 @@ Node* LinkedMesh::getMinColumn()
     Node *h = header;
     Node *min_col = h->right;
     h = h->right->right;
-
+    std::cout<<"1"<<std::endl;
     do
     {
-
         if(h->nodeCount < min_col->nodeCount) 
         {
+        	    std::cout<<"3"<<std::endl;
             min_col = h; 
         } 
         h = h->right; 
     }while(h != header);
-
+    std::cout<<"4"<<std::endl;
     std::cout<<"coluna escolhida: "<<min_col->colID<<std::endl;
   
     return min_col; 

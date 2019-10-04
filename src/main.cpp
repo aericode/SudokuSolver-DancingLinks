@@ -8,10 +8,10 @@
 void cellToBin(int row, int column, int value, int binPlace[]){
 	//1 a 4 -> 0 a 3
 	//facilitar as contas
-	value=value-1;
 
 	if(row>3||column>3||value>3){
 		std::cout<<"invalid input in cell to binary conversion"<<std::endl;
+		std::cout  << "c: "<< column<< "r: " << row<<"v: "<<value<<std::endl;
 		return;
 	}
 
@@ -83,7 +83,8 @@ void sudokuToBin(std::string sudoku, bool problem[145][64]){
     		if(currentValue<1 || currentValue>4){
     			std::cout<<"valor fora do alcance (1-4)"<<std::endl;
     		}
-
+    		//reduzindo o range de (1-4) para (0-3)
+    		currentValue = currentValue - 1;
 			cellToBin(cellRow,cellCol,currentValue,binPlace);
 
 			problem[currentRow][binPlace[0]]=true;
@@ -101,6 +102,26 @@ void sudokuToBin(std::string sudoku, bool problem[145][64]){
 
 }
 
+void testfill(bool problem[145][64]){
+	for(int i=0;i<3;i++){
+		problem[0][i]= true;
+	}
+
+
+}
+
+void dummyFill(bool problem[145][64]){
+	for(int i=0;i<64;i++){
+		if(i%2==0)problem[1][i]= true;
+	}
+
+	for(int i=0;i<64;i++){
+		if(i%2==1)problem[2][i]= true;
+	}	
+}
+
+
+
 int main(){
 	std::cout<<"inicializando Binário\n"<<std::endl;
 
@@ -116,11 +137,11 @@ int main(){
 
 	int binPlace[4];
 
-	cellToBin(3,3,4,binPlace);
+	//cellToBin(3,3,4,binPlace);
 
-	std::cout<<binPlace[0]<<' '<<binPlace[1]<<' '<<binPlace[2]<<' '<<binPlace[3]<<std::endl;
+	//std::cout<<binPlace[0]<<' '<<binPlace[1]<<' '<<binPlace[2]<<' '<<binPlace[3]<<std::endl;
 
-	/*
+	
 	std::cout<<"Marcando headers\n"<<std::endl;
 	for(int i=0; i<=nRow; i++) 
     { 
@@ -134,17 +155,8 @@ int main(){
         } 
     }
 
-    binSim[1][0] = true; binSim[1][3] = true; 
-    binSim[1][6] = true; binSim[2][0] = true; 
-    binSim[2][3] = true; binSim[3][3] = true; 
-    binSim[3][4] = true; binSim[3][6] = true; 
-    binSim[4][2] = true; binSim[4][4] = true; 
-    binSim[4][5] = true; binSim[5][1] = true; 
-    binSim[5][2] = true; binSim[5][5] = true; 
-    binSim[5][6] = true; binSim[6][1] = true; 
-    binSim[6][6] = true; binSim[7][0] = true; 
-    binSim[7][3] = true; 
-	*/
+    //dummyFill(binSim);
+
 
 	/*
 	for (int i=0;i<145;i++){
@@ -159,8 +171,9 @@ int main(){
 	}
 	*/
 
-	/*
+	
 	sudokuToBin(sudoku,binSim);
+	//testfill(binSim);
 
     std::cout<<"inicializando linked mesh\n";
 
@@ -169,6 +182,6 @@ int main(){
 	std::cout<<"linked mesh inicializada\n";
 
 	test.search(0);
-	*/
+	
 	
 }

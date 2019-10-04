@@ -226,6 +226,7 @@ void LinkedMesh::search(int k)
     // Header list vazia = Resolvido
     if(header->right == header) 
     { 
+        std::cout<<"solution found!"<<std::endl;
         printSolutions(); 
         return; 
     } 

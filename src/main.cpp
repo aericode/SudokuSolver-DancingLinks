@@ -11,11 +11,8 @@ void cellToBin(int row, int column, int value, int binPlace[]){
 
 	if(row>3||column>3||value>3){
 		std::cout<<"invalid input in cell to binary conversion"<<std::endl;
-		std::cout  << "c: "<< column<< "r: " << row<<"v: "<<value<<std::endl;
 		return;
 	}
-
-	std::cout  << "c: "<< column<< "r: " << row<<"v: "<<value<<std::endl;
 
 	//usando divisão inteira para dar "floor" no row
 	int block = ((row/2)*2 + column/2);
@@ -29,9 +26,9 @@ void cellToBin(int row, int column, int value, int binPlace[]){
 	return;
 }
 
-void sudokuToBin(std::string sudoku, bool problem[145][64]){
-	int nRow = 144;//linhas no problema
-	int nCol = 64;//colunas (opções)
+void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
+
+
 
 	//locais da linha da matriz problema a serem marcados
 	int binPlace[4];
@@ -120,6 +117,69 @@ void dummyFill(bool problem[145][64]){
 	}	
 }
 
+void binaryToSudoku(int rowID, bool problem[145][64], int* fillInfo){
+	fillInfo =  new int[3];
+
+	int rawCoord;
+	int coordX;
+	int coordY;
+	int value;
+
+	for(int i=0;i<16;i++){
+		if(problem[rowID][i]){
+			rawCoord = i;
+			break;
+		}
+	}
+
+	coordX = rawCoord%4;
+	coordY = rawCoord/4;
+
+	int rawValue;
+
+	for(int i = 16;i<32;i++){
+		if(problem[rowID][i]){
+			rawValue = i;
+			break;
+		}
+	}
+
+	value = rawValue%4;
+
+	fillInfo[0] = coordX;
+	fillInfo[1] = coordY;
+	fillInfo[2] = value;
+
+}
+
+
+void resultToString(std::vector<Node*> solutions, bool problem[145][64]){
+
+  	int* info = new int[3]; 
+ 	
+ 	std::cout<<"aaaaaab"<<std::endl;
+ 	std::cout<<solutions.size()<<'\n';
+
+    for(int i = 0; i<solutions.size(); i++){
+    	std::cout<<i<<'\n';
+        std::cout<<solutions[i]->rowID<<" "; 
+    }
+    std::cout<<"\n"; 
+  	/*
+ 	std::cout <<"iniciando impressão de resultados"<<std::endl;
+    for(i = solutions.begin(); i!=solutions.end(); i++){
+    	std::cout<<'a'<<std::endl;
+        binaryToSudoku((*i)->rowID, problem, info);
+
+        std::cout <<"linha:  "<< info[0]<<std::endl;
+        std::cout <<"coluna: "<< info[1]<<std::endl;
+        std::cout <<"valor : "<< info[2]<<std::endl;
+        std::cout<<"\n";
+    }
+    std::cout<<"\n"; 
+    */
+}
+
 
 
 int main(){
@@ -133,11 +193,16 @@ int main(){
 
 	bool binSim[145][64];
 
-	sudoku = "3-1--2-2-4-32-1-";
+	sudoku = "---3-1-442311342";
 
 	int binPlace[4];
 
-	//cellToBin(3,3,4,binPlace);
+	cellToBin(3,3,4,binPlace);
+
+
+
+
+
 
 	//std::cout<<binPlace[0]<<' '<<binPlace[1]<<' '<<binPlace[2]<<' '<<binPlace[3]<<std::endl;
 
@@ -171,8 +236,8 @@ int main(){
 	}
 	*/
 
-	
-	sudokuToBin(sudoku,binSim);
+
+	sudokuToBin(sudoku,binSim,144,64);
 	//testfill(binSim);
 
     std::cout<<"inicializando linked mesh\n";
@@ -182,6 +247,9 @@ int main(){
 	std::cout<<"linked mesh inicializada\n";
 
 	test.search(0);
-	
+
+	std::cout<<"busca finalizada\n";
+
+	resultToString(test.solutions, binSim);
 	
 }

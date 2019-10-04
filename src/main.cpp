@@ -15,19 +15,16 @@ void cellToBin(int row, int column, int value, int binPlace[]){
 		return;
 	}
 
-	/*
-	xBlock = row/2;
-	yBlock = column/2;
+	std::cout  << "c: "<< column<< "r: " << row<<"v: "<<value<<std::endl;
 
-	Blockindex = 2*xBlock + yblock;
-	*/
+	//usando divisão inteira para dar "floor" no row
+	int block = ((row/2)*2 + column/2);
 
-	int block = row + column/2;
 
 	binPlace[0] =      (4*row    + column);
 	binPlace[1] = 16 + (4*column + value);
 	binPlace[2] = 32 + (4*row    + value);
-	binPlace[3] = 48 + (4*block + value);
+	binPlace[3] = 48 + (4*block  + value);
 
 	return;
 }
@@ -47,6 +44,8 @@ void sudokuToBin(std::string sudoku, bool problem[145][64]){
 
 	if(sudoku.size()!=16){
 		std::cout<<"invalid input size for 4x4 too short, 16 characters required"<<std::endl;
+		std::cout<<"current size: "<<sudoku.size()<<std::endl;
+
 		return;
 	}
 
@@ -117,7 +116,7 @@ int main(){
 
 	int binPlace[4];
 
-	cellToBin(0,0,2,binPlace);
+	cellToBin(3,3,4,binPlace);
 
 	std::cout<<binPlace[0]<<' '<<binPlace[1]<<' '<<binPlace[2]<<' '<<binPlace[3]<<std::endl;
 

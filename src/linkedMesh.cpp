@@ -5,9 +5,6 @@
 
 // implementado com base em https://bit.ly/2oHRcon
 
-//81x4 para sudokus padrão
-#define SUDOKUWIDTH 100
-
 //retornam a prox. linha/coluna lidando com a caracteristica circular
 //lida também com a coluna extra dos headers
 
@@ -43,10 +40,9 @@ LinkedMesh::LinkedMesh(bool ProbMat[145][64]){
 }
 
 void LinkedMesh::initialize(bool ProbMat[145][64]){
-	// One extra row for list header nodes 
-    // for each column
+	// uma linha extra para headers
 
-
+    //tamanhos para um sudoku 
     nRow = 144;
 	nCol = 64;
 

@@ -6,13 +6,21 @@
 #include <fstream>
 #include <chrono>
 
+//144 = 9x16 maior número de linhas que pode ser gerada por um sudoku 4x4 convertido
 #define NROW 144
+//explicado logo abaixo
 #define NCOL 64
 
-//column = x row = y
+//Escolhe 4 locais entre 64 para representar, linha, coluna e valor (do sudoku original)
+//De 0  a 15: 4xLinha  + Coluna = num. da celula
+//De 16 a 31: 4xColuna + Valor  = "já tem esse valor na coluna"
+//De 31 a 47: 4xLinha  + Valor  = "já tem esse valor na linha"
+//De 47 a 63: 4xBloco  + Valor  = "já tem esse valor no bloco"
+//Marca 1 em cada um desses intervalos, isso permite resolver por cover-set
+//binPlace que vai carregar esses valores
 void cellToBin(int row, int column, int value, int binPlace[]){
-	//1 a 4 -> 0 a 3
-	//facilitar as contas
+	//column = x row = y
+	//assume value entre 0 e 3.
 
 	if(row>3||column>3||value>3){
 		std::cout<<"invalid input in cell to binary conversion"<<std::endl;
@@ -31,6 +39,10 @@ void cellToBin(int row, int column, int value, int binPlace[]){
 	return;
 }
 
+//Utiliza a função CellToBin para converter um sudoku em uma matriz binária
+//Cada "dica" (espaço preenchido no puzzle original) gera uma linha
+//Cada espaço em branco gera uma linha para cada valor que poderia assumir
+//Se for um sudoku 4x4 gera 4 linhas, 9x9 gera 9, 16x16 gera 16, e assim por diante
 void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
 
 
@@ -101,6 +113,8 @@ void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
 }
 
 
+//Traduz de volta a linha indicada por rowID para uma tripla (coluna - linha - valor)
+//Usa-se essa função quando já tenho uma cobertura exata.
 int* binaryToSudoku(int rowID, bool problem[145][64]){
 	int* fillInfo =  new int[3];
 
@@ -137,6 +151,8 @@ int* binaryToSudoku(int rowID, bool problem[145][64]){
 	return fillInfo;
 }
 
+//O array Result contém as LINHAS da matriz binária que resultarão em um coverset
+//Traduzindo elas e colocando todas em um array, temos a resposta do sudoku
 std::string stringifyResult(int result[16], bool problem[145][64]){
 	std::string stringified;
 	int* locvalue = new int(3);
@@ -159,6 +175,7 @@ std::string stringifyResult(int result[16], bool problem[145][64]){
 	}
 
 	for(int i=0;i<16;i++){
+		//convertendo int pra char
 		stringified += (char)(finalResult[i]+'0');
 	}
 
@@ -167,7 +184,7 @@ std::string stringifyResult(int result[16], bool problem[145][64]){
 }
 
 
-
+//Pega puzzles e respostas do CSV na pasta input
 void sampleFromFile
 	(std::vector<std::string> &puzzle_list,
 	 std::vector<std::string> &answer_list){
@@ -194,14 +211,17 @@ void sampleFromFile
 }
 
 int main(){
+	//pega os puzzles e respostas de uma lista externa
 	std::vector<std::string> puzzle_list;
 	std::vector<std::string> answer_list;
 	sampleFromFile(puzzle_list, answer_list);
 	int puzzleCount = puzzle_list.size()-1;
 
 
-
+	//quais listas da matriz binária contém a solução
 	int solutionRows[16];
+
+	//marcador para indicar que nenhuma solução foi achada
 	solutionRows[15] = -1;
 
 	//nRow indica o numero maximo de linhas em um puzzle
@@ -209,7 +229,10 @@ int main(){
 	bool binSim[NROW+1][NCOL];
 
 	int chosenPuzzleID;
+	//string na forma 3--2-1--23-4--41 contendo o sudoku 4x4 a ser resolvido
 	std::string sudoku;
+
+	//resposta do algoritmo
 	std::string outputAnswer;
 
 	std::cout << "selecione um puzzle (0-"<<puzzleCount<<')'<<std::endl;
@@ -223,19 +246,24 @@ int main(){
 	sudoku = puzzle_list.at(chosenPuzzleID);
 	std::cout<<"puzzle:   " <<sudoku<<std::endl;
 
+	//timers
 	auto begin = std::chrono::high_resolution_clock::now();
 
+	//traduz o sudoku para binário
 	sudokuToBin(sudoku,binSim,NROW,NCOL);
-
+	//transforma o binário em linkedlists
 	LinkedMesh test(binSim);
-
+	//aplica o algoritmo X de knuth nas linked lists
 	test.search(solutionRows);
 
+	//timers
 	auto end = std::chrono::high_resolution_clock::now();    
 	auto dur = end - begin;
 	auto ms = std::chrono::duration_cast<std::chrono::microseconds >(dur).count();
 
+	//checa se o puzzle foi resolvido antes de acessar os valores da lista
 	if(solutionRows[15]!=-1){
+		//traduz de volta para a forma de sudoku
 		outputAnswer = stringifyResult(solutionRows, binSim);
 		std::cout<<"resposta: "<<outputAnswer<<std::endl;
 
@@ -249,8 +277,7 @@ int main(){
 		std::cout<<"não foram encontradas respostas para o puzzle"<<std::endl;
 	}
 
-	std::cout<<"tempo de resolução"<<std::endl;
-	std::cout<<(int)ms<<" micro-segundos"<<std::endl;
+	std::cout<<"tempo de resolução: "<<(int)ms<<" micro-segundos"<<std::endl;
 
 	return 0;
 }

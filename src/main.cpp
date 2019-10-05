@@ -93,29 +93,8 @@ void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
 
     	}
     }
-
-    
-
-
 }
 
-void testfill(bool problem[145][64]){
-	for(int i=0;i<3;i++){
-		problem[0][i]= true;
-	}
-
-
-}
-
-void dummyFill(bool problem[145][64]){
-	for(int i=0;i<64;i++){
-		if(i%2==0)problem[1][i]= true;
-	}
-
-	for(int i=0;i<64;i++){
-		if(i%2==1)problem[2][i]= true;
-	}	
-}
 
 int* binaryToSudoku(int rowID, bool problem[145][64]){
 	int* fillInfo =  new int[3];
@@ -183,20 +162,36 @@ std::string stringifyResult(int result[16], bool problem[145][64]){
 }
 
 
+void fillSamples (std::string* samples){
+	samples[0] = "---3-1-442311342";
+	samples[1] = "---3-1-4-2311342";
+	samples[2] = "---3-1-4-2-11342";
+	samples[3] = "---3-1-4-2-11-42";
+	samples[4] = "---3-1-4-2-1--42";
+	samples[5] = "---3-1-4-2-1--4-";
+}
 
 int main(){
+	std::string samples[6];
+	fillSamples(samples);
+
 	int solutionRows[16];
 	solutionRows[15] = -1;
 	int binPlace[4];
 
-	//UMA DAS LINHAS É PARA OS HEADERS, NÃO TEM SIGNIFICADO NA INSTANCIA
+	//nRow indica o numero maximo de linhas em um puzzle
+	//as operações são feitas usando o maximo +1, a linha 0 indexa headers
 	int nRow = 144;//linhas no problema
 	int nCol = 64;//colunas (opções)
 	std::string sudoku;
 
 	bool binSim[145][64];
 
-	sudoku = "---3-1-442311342";
+	int difIndex;
+	std::cout<<"selecione um nível de dificuldade (0-5)"<<std::endl;
+	std::cin>>difIndex;
+
+	sudoku = samples[difIndex];
 	std::cout<<"puzzle:   " <<sudoku<<std::endl;
 
 
@@ -213,5 +208,5 @@ int main(){
 		std::cout<<"não foram encontradas respostas para o puzzle"<<std::endl;
 	}
 
-	
+	return 0;
 }

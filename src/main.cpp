@@ -3,6 +3,10 @@
 #include "node.h"
 #include "linkedMesh.h"
 #include <string>
+#include <fstream>
+
+#define NROW 144
+#define NCOL 64
 
 //column = x row = y
 void cellToBin(int row, int column, int value, int binPlace[]){
@@ -162,48 +166,79 @@ std::string stringifyResult(int result[16], bool problem[145][64]){
 }
 
 
-void fillSamples (std::string* samples){
-	samples[0] = "---3-1-442311342";
-	samples[1] = "---3-1-4-2311342";
-	samples[2] = "---3-1-4-2-11342";
-	samples[3] = "---3-1-4-2-11-42";
-	samples[4] = "---3-1-4-2-1--42";
-	samples[5] = "---3-1-4-2-1--4-";
+
+void sampleFromFile
+	(std::vector<std::string> &puzzle_list,
+	 std::vector<std::string> &answer_list){
+
+	std::string line;
+	std::string puzzle;
+	std::string answer;
+
+	int i =0;
+
+	std::ifstream file ("./input/sudoku.csv");
+	
+	while (file && getline(file, line)){
+
+		puzzle = line.substr(0,16);
+		answer = line.substr(17,16);
+
+
+		puzzle_list.push_back(puzzle);
+		answer_list.push_back(answer);
+
+	}
+
 }
 
 int main(){
-	std::string samples[6];
-	fillSamples(samples);
+	std::vector<std::string> puzzle_list;
+	std::vector<std::string> answer_list;
+	sampleFromFile(puzzle_list, answer_list);
+	int puzzleCount = puzzle_list.size()-1;
+
+
 
 	int solutionRows[16];
 	solutionRows[15] = -1;
-	int binPlace[4];
 
 	//nRow indica o numero maximo de linhas em um puzzle
 	//as operações são feitas usando o maximo +1, a linha 0 indexa headers
-	int nRow = 144;//linhas no problema
-	int nCol = 64;//colunas (opções)
+	bool binSim[NROW+1][NCOL];
+
+	int chosenPuzzleID;
 	std::string sudoku;
+	std::string outputAnswer;
 
-	bool binSim[145][64];
+	std::cout << "selecione um puzzle (0-"<<puzzleCount<<')'<<std::endl;
+	std::cin  >> chosenPuzzleID;
 
-	int difIndex;
-	std::cout<<"selecione um nível de dificuldade (0-5)"<<std::endl;
-	std::cin>>difIndex;
+	if(chosenPuzzleID>puzzleCount){
+		std::cout<<"não há puzzle com esse ID na lista"<<std::endl;
+		return 0;
+	}
 
-	sudoku = samples[difIndex];
+	sudoku = puzzle_list.at(chosenPuzzleID);
 	std::cout<<"puzzle:   " <<sudoku<<std::endl;
 
 
-	sudokuToBin(sudoku,binSim,144,64);
+	sudokuToBin(sudoku,binSim,NROW,NCOL);
 
 	LinkedMesh test(binSim);
 
 	test.search(0,solutionRows);
 
 	if(solutionRows[15]!=-1){
-		std::cout<<"resposta: ";
-		std::cout<<stringifyResult(solutionRows, binSim)<<std::endl;
+		outputAnswer = stringifyResult(solutionRows, binSim);
+		std::cout<<"resposta: "<<outputAnswer<<std::endl;
+
+		if(outputAnswer==answer_list[chosenPuzzleID]){
+			std::cout<<"a resposta proposta coincide com a do gabarito"<<std::endl;
+		}else{
+			std::cout<<"a resposta proposta não coincide com a do gabarito"<<std::endl;
+			std::cout<<"resposta do gabarito: "<<answer_list.at(chosenPuzzleID);
+		}
 	}else{
 		std::cout<<"não foram encontradas respostas para o puzzle"<<std::endl;
 	}

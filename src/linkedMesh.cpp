@@ -46,13 +46,9 @@ void LinkedMesh::initialize(bool ProbMat[145][64]){
 	// One extra row for list header nodes 
     // for each column
 
-	std::cout<<"Inicializando nodes"<<std::endl;
 
     nRow = 144;
 	nCol = 64;
-
-	std::cout<<"num de colunas :"<<nRow<<std::endl;
-	std::cout<<"num de linhas  :"<<nCol<<std::endl;
 
 
     for(int i = 0; i <= nRow; i++) 
@@ -107,9 +103,6 @@ void LinkedMesh::initialize(bool ProbMat[145][64]){
 
     }
 
-    std::cout<<"Nodes inicializados"<<std::endl;
-
-    std::cout<<"Marcando header"<<std::endl;
 
     // link header right pointer to column  
     // header of first column  
@@ -122,7 +115,6 @@ void LinkedMesh::initialize(bool ProbMat[145][64]){
     Matrix[0][0].left = header; 
     Matrix[0][nCol-1].right = header;
 
-    std::cout<<"Header Marcado"<<std::endl;
 }
 
 //Tira um node da lista
@@ -182,22 +174,17 @@ void LinkedMesh::uncover(Node *targetNode)
 //Acelera o processo de decisão
 Node* LinkedMesh::getMinColumn() 
 {
-	std::cout<<"iniciando getmin"<<std::endl;
     Node *h = header;
     Node *min_col = h->right;
     h = h->right->right;
-    std::cout<<"1"<<std::endl;
     do
     {
         if(h->nodeCount < min_col->nodeCount) 
         {
-        	    std::cout<<"3"<<std::endl;
             min_col = h; 
         } 
         h = h->right; 
     }while(h != header);
-    std::cout<<"4"<<std::endl;
-    std::cout<<"coluna escolhida: "<<min_col->colID<<std::endl;
   
     return min_col; 
 }
@@ -234,31 +221,23 @@ void LinkedMesh::search(int k,int* answersList)
     Node *leftNode; 
     Node *column; 
   
-    std::cout<<"entrando no search"<<std::endl;
     // Header list vazia = Resolvido
     if(header->right == header) 
     { 
-        std::cout<<"solution found!"<<std::endl;
-        printSolutions();
+        //printSolutions();
         getSolution(answersList);
         return; 
     } 
   
- 	std::cout<<"antes de escolher a coluna"<<std::endl;
     // Escolhe a coluna
     column = getMinColumn(); 
-  
-    std::cout<<"peguei a min_col"<<std::endl;
 
     // cobre a coluna
     cover(column);
-
-    std::cout<<"cobrindo min_col"<<std::endl;
   
     for(rowNode = column->down; rowNode != column;  
         rowNode = rowNode->down ) 
     { 
-    	std::cout<<"entrei no for"<<std::endl;
 
         solutions.push_back(rowNode); 
   

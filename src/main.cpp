@@ -183,7 +183,7 @@ std::string stringifyResult(int result[16], bool problem[145][64]){
 
 }
 
-
+//Fonte: http://sudoku-download.net/sudoku_4x4.php
 //Pega puzzles e respostas do CSV na pasta input
 void sampleFromFile
 	(std::vector<std::string> &puzzle_list,

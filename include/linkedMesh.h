@@ -30,7 +30,9 @@ public:
 	Node *getMinColumn();
 
 	void printSolutions();
-	void search(int);
+	void search(int, int*);
+
+	void getSolution(int*);
 };
 
 #endif

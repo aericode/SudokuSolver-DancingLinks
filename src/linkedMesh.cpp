@@ -212,9 +212,21 @@ void LinkedMesh::printSolutions()
     std::cout<<"\n"; 
 }
 
+void LinkedMesh::getSolution(int* answersList) 
+{
+    int j=0;
+    int *correctRows = new int[16];
+    std::vector<Node*>::iterator i; 
+  
+    for(i = solutions.begin(); i!=solutions.end(); i++){
+        answersList[j] = (*i)->rowID;
+        j++;
+    }
+
+}
   
 // Search for exact covers 
-void LinkedMesh::search(int k) 
+void LinkedMesh::search(int k,int* answersList) 
 {
 
     Node *rowNode; 
@@ -227,7 +239,8 @@ void LinkedMesh::search(int k)
     if(header->right == header) 
     { 
         std::cout<<"solution found!"<<std::endl;
-        printSolutions(); 
+        printSolutions();
+        getSolution(answersList);
         return; 
     } 
   
@@ -254,7 +267,7 @@ void LinkedMesh::search(int k)
             cover(rightNode); 
   
         // move to level k+1 (recursively) 
-        search(k+1); 
+        search(k+1, answersList); 
   
         // if solution in not possible, backtrack (uncover) 
         // and remove the selected row (set) from solution 

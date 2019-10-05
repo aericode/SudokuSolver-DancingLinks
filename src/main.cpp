@@ -117,8 +117,8 @@ void dummyFill(bool problem[145][64]){
 	}	
 }
 
-void binaryToSudoku(int rowID, bool problem[145][64], int* fillInfo){
-	fillInfo =  new int[3];
+int* binaryToSudoku(int rowID, bool problem[145][64]){
+	int* fillInfo =  new int[3];
 
 	int rawCoord;
 	int coordX;
@@ -150,6 +150,13 @@ void binaryToSudoku(int rowID, bool problem[145][64], int* fillInfo){
 	fillInfo[1] = coordY;
 	fillInfo[2] = value;
 
+
+	std::cout<<"\n\n\n\n";
+	std::cout<<fillInfo[0]<<'\n';
+	std::cout<<fillInfo[1]<<'\n';
+	std::cout<<fillInfo[2]<<'\n';
+
+	return fillInfo;
 }
 
 
@@ -180,9 +187,47 @@ void resultToString(std::vector<Node*> solutions, bool problem[145][64]){
     */
 }
 
+std::string stringifyResult(int result[16], bool problem[145][64]){
+	std::string stringified;
+	int* locvalue = new int(3);
+	int finalResult[16];
+	int solutionIndex;
+	int placeValue;
+
+	std::cout<<"inner \n";
+	for(int i=0;i<16;i++){
+		std::cout<<result[i]<<' ';
+	}
+
+	for(int i=0;i<16;i++){
+		locvalue = binaryToSudoku(result[i],problem);
+
+		//converte de x/y para uma linha reta
+		solutionIndex = locvalue[1]*4 + locvalue[0];
+
+		//volta o range de 0-3 para 1-4
+		placeValue = locvalue[2] + 1;
+			
+		finalResult[solutionIndex] =  placeValue;
+
+		std::cout <<"linha:  "<< locvalue[0]<<std::endl;
+        std::cout <<"coluna: "<< locvalue[1]<<std::endl;
+        std::cout <<"valor : "<< locvalue[2]<<std::endl;
+
+	}
+
+	for(int i=0;i<16;i++){
+		stringified += (char)(finalResult[i]+'0');
+	}
+
+	return stringified;
+
+}
+
 
 
 int main(){
+	int *solutionRows = new int[16];
 	std::cout<<"inicializando Binário\n"<<std::endl;
 
 	//UMA DAS LINHAS É PARA OS HEADERS, NÃO TEM SIGNIFICADO NA INSTANCIA
@@ -246,10 +291,26 @@ int main(){
 
 	std::cout<<"linked mesh inicializada\n";
 
-	test.search(0);
+	test.search(0,solutionRows);
 
 	std::cout<<"busca finalizada\n";
 
-	resultToString(test.solutions, binSim);
+
+	for(int i=0;i<16;i++){
+		std::cout<<solutionRows[i]<<' ';
+	}
+	std::cout<<'\n';
+
+
+	std::cout<<"\n\n\nresultado: \n";
+	std::cout<<stringifyResult(solutionRows, binSim);
+	/*
+	std::cout<<"external printing\n";
+	for(int i = 0;i<16;i++){
+		std::cout<<solutionRows[i]<<" "; 
+	}
+	std::cout<<'\n';
+	*/
+	//resultToString(test.solutions, binSim);
 	
 }

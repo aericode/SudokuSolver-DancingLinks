@@ -189,15 +189,6 @@ Node* LinkedMesh::getMinColumn()
     return min_col; 
 }
 
-void LinkedMesh::printSolutions() 
-{ 
-    std::cout<<"Printing Solutions: "; 
-    std::vector<struct Node*>::iterator i; 
-  
-    for(i = solutions.begin(); i!=solutions.end(); i++) 
-        std::cout<<(*i)->rowID<<" "; 
-    std::cout<<"\n"; 
-}
 
 void LinkedMesh::getSolution(int* answersList) 
 {
@@ -213,7 +204,7 @@ void LinkedMesh::getSolution(int* answersList)
 }
   
 // Search for exact covers 
-void LinkedMesh::search(int k,int* answersList) 
+void LinkedMesh::search(int* answersList) 
 {
 
     Node *rowNode; 
@@ -224,7 +215,6 @@ void LinkedMesh::search(int k,int* answersList)
     // Header list vazia = Resolvido
     if(header->right == header) 
     { 
-        //printSolutions();
         getSolution(answersList);
         return; 
     } 
@@ -244,9 +234,8 @@ void LinkedMesh::search(int k,int* answersList)
         for(rightNode = rowNode->right; rightNode != rowNode; 
             rightNode = rightNode->right) 
             cover(rightNode); 
-  
-        // move to level k+1 (recursively) 
-        search(k+1, answersList); 
+
+        search(answersList); 
   
         // if solution in not possible, backtrack (uncover) 
         // and remove the selected row (set) from solution 

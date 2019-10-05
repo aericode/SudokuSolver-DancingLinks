@@ -4,6 +4,7 @@
 #include "linkedMesh.h"
 #include <string>
 #include <fstream>
+#include <chrono>
 
 #define NROW 144
 #define NCOL 64
@@ -222,12 +223,17 @@ int main(){
 	sudoku = puzzle_list.at(chosenPuzzleID);
 	std::cout<<"puzzle:   " <<sudoku<<std::endl;
 
+	auto begin = std::chrono::high_resolution_clock::now();
 
 	sudokuToBin(sudoku,binSim,NROW,NCOL);
 
 	LinkedMesh test(binSim);
 
-	test.search(0,solutionRows);
+	test.search(solutionRows);
+
+	auto end = std::chrono::high_resolution_clock::now();    
+	auto dur = end - begin;
+	auto ms = std::chrono::duration_cast<std::chrono::microseconds >(dur).count();
 
 	if(solutionRows[15]!=-1){
 		outputAnswer = stringifyResult(solutionRows, binSim);
@@ -242,6 +248,9 @@ int main(){
 	}else{
 		std::cout<<"não foram encontradas respostas para o puzzle"<<std::endl;
 	}
+
+	std::cout<<"tempo de resolução"<<std::endl;
+	std::cout<<(int)ms<<" micro-segundos"<<std::endl;
 
 	return 0;
 }

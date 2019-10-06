@@ -32,18 +32,18 @@ int LinkedMesh::getDown(int i){return (i+1) % (nRow+1);}
 
 LinkedMesh::LinkedMesh(){}
 
-LinkedMesh::LinkedMesh(bool ProbMat[145][64]){
+LinkedMesh::LinkedMesh(bool ProbMat[65][64]){
 
 	header = new Node();
 
 	initialize(ProbMat);
 }
 
-void LinkedMesh::initialize(bool ProbMat[145][64]){
+void LinkedMesh::initialize(bool ProbMat[65][64]){
 	// uma linha extra para headers
 
     //tamanhos para um sudoku 
-    nRow = 144;
+    nRow = 64;
 	nCol = 64;
 
 

@@ -6,8 +6,8 @@
 #include <fstream>
 #include <chrono>
 
-//144 = 9x16 maior número de linhas que pode ser gerada por um sudoku 4x4 convertido
-#define NROW 144
+//64 = 4x16 maior número de linhas que pode ser gerada por um sudoku 4x4 convertido
+#define NROW 64
 //explicado logo abaixo
 #define NCOL 64
 
@@ -43,7 +43,7 @@ void cellToBin(int row, int column, int value, int binPlace[]){
 //Cada "dica" (espaço preenchido no puzzle original) gera uma linha
 //Cada espaço em branco gera uma linha para cada valor que poderia assumir
 //Se for um sudoku 4x4 gera 4 linhas, 9x9 gera 9, 16x16 gera 16, e assim por diante
-void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
+void sudokuToBin(std::string sudoku, bool problem[65][64], int nRow, int nCol){
 
 
 
@@ -115,7 +115,7 @@ void sudokuToBin(std::string sudoku, bool problem[145][64], int nRow, int nCol){
 
 //Traduz de volta a linha indicada por rowID para uma tripla (coluna - linha - valor)
 //Usa-se essa função quando já tenho uma cobertura exata.
-int* binaryToSudoku(int rowID, bool problem[145][64]){
+int* binaryToSudoku(int rowID, bool problem[65][64]){
 	int* fillInfo =  new int[3];
 
 	int rawCoord;
@@ -153,7 +153,7 @@ int* binaryToSudoku(int rowID, bool problem[145][64]){
 
 //O array Result contém as LINHAS da matriz binária que resultarão em um coverset
 //Traduzindo elas e colocando todas em um array, temos a resposta do sudoku
-std::string stringifyResult(int result[16], bool problem[145][64]){
+std::string stringifyResult(int result[16], bool problem[65][64]){
 	std::string stringified;
 	int* locvalue = new int(3);
 	int finalResult[16];
